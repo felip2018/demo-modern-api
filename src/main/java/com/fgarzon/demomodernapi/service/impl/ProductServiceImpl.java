@@ -20,4 +20,8 @@ public class ProductServiceImpl implements IProductService {
     public List<Product> getProductsByCategory(String category) {
         return productRepository.findByCategory(category);
     }
+
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
 }

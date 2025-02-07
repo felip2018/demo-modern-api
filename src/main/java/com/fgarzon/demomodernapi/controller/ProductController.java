@@ -4,6 +4,7 @@ import com.fgarzon.demomodernapi.entity.Product;
 import com.fgarzon.demomodernapi.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,24 @@ public class ProductController {
         return ResponseEntity.ok().eTag(currentTag).body(result);
     }
 
-    private String generateETag(List<Product> findedList) {
+    @GetMapping("/id/{id}")
+    public ResponseEntity<EntityModel<Product>> getProductById(@PathVariable String id,
+                                                               @RequestHeader(value = "If-None-Match", required = false) String eTag) {
+        Product findedProduct = productService.getProductById(Long.valueOf(id));
+        String currentTag = generateETag(findedProduct);
+        if (currentTag.equals(eTag)) {
+            System.out.println("Sin modificaciones en la respuesta");
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+        Link link = linkTo(methodOn(ProductController.class).getProductById(id, eTag))
+                .withRel("productsById");
+
+        EntityModel<Product> result = EntityModel.of(findedProduct, link);
+
+        return ResponseEntity.ok().eTag(currentTag).body(result);
+    }
+
+    private String generateETag(Object findedList) {
         return Integer.toHexString(findedList.hashCode());
     }
 
