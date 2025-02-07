@@ -10,12 +10,14 @@ public class LoggerAspect {
     // Antes de ejecutar un método de UserService
     @Before(value = "execution(* com.fgarzon.demomodernapi.service.IUserService.*(..))")
     public void beforeUserService() {
-        System.out.println("-> [LOG] before method execution at SaludoService");
+        System.out.println("-> [LOG] before method execution at UserService");
     }
 
     @After(value = "execution(* com.fgarzon.demomodernapi.service.IUserService.*(..))")
     public void afterUserService() {
-        System.out.println("-> [LOG] after method execution at SaludoService");
+        System.out.println("-> [LOG] after method execution at UserService");
     }
 
 }
+
+
